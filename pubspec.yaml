@@ -20,6 +20,8 @@ dependencies:
   flutter_google_places: any
   geocoder: any
 
+  rxdart: any
+
   easy_blocs:
     path: ../easy_blocs
 

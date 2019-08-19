@@ -1,6 +1,6 @@
 library pocket_map;
 
-export 'src/AddressField.dart';
+export 'src/PlaceField.dart';
 
 export 'src/PocketMap.dart';
 export 'src/PocketMapBuilder.dart';

@@ -1,7 +1,7 @@
 import 'package:pocket_map/pocket_map.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable(explicitToJson: true, generateToJsonFunction: false)
+@JsonSerializable(explicitToJson: true)
 class PocketPoint extends LatLng {
   static const lat = 'lat';
   static const lng = 'lng';
