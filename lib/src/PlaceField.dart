@@ -140,6 +140,7 @@ class _PlaceFieldShellState extends State<PlaceFieldShell>
       inputDecoration: widget.decoration.copyWith(
         errorText: widget.nosy(_data.data1)?.text,
       ),
+      hint: widget.decoration.hintText,
     );
   }
 }
