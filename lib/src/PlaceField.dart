@@ -5,7 +5,6 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class PlaceFieldSheet {
   final bool enable;
 
@@ -13,17 +12,15 @@ class PlaceFieldSheet {
 
   PlaceFieldSheet copyWith({FieldError error, bool enable}) {
     return PlaceFieldSheet(
-      enable: enable??this.enable,
+      enable: enable ?? this.enable,
     );
   }
 }
-
 
 abstract class PlaceFieldBone implements FieldBone<String> {
   String get apiKey;
   Stream<Data2<FieldError, PlaceFieldSheet>> get outErrorAndSheet;
 }
-
 
 class PlaceFieldSkeleton extends FieldSkeleton<String> implements PlaceFieldBone {
   final String apiKey;
@@ -32,9 +29,10 @@ class PlaceFieldSkeleton extends FieldSkeleton<String> implements PlaceFieldBone
     String seed,
     List<FieldValidator<String>> validators,
     @required this.apiKey,
-  }): assert (apiKey != null), super(
-    validators: validators??[TextFieldValidator.undefined],
-  );
+  })  : assert(apiKey != null),
+        super(
+          validators: validators ?? [TextFieldValidator.undefined],
+        );
 
   @override
   void dispose() {
@@ -42,25 +40,20 @@ class PlaceFieldSkeleton extends FieldSkeleton<String> implements PlaceFieldBone
     super.dispose();
   }
 
-  BehaviorSubject<PlaceFieldSheet> _sheetController = BehaviorSubject.seeded(const PlaceFieldSheet());
+  BehaviorSubject<PlaceFieldSheet> _sheetController =
+      BehaviorSubject.seeded(const PlaceFieldSheet());
   Stream<PlaceFieldSheet> get outSheet => _sheetController;
   PlaceFieldSheet get sheet => _sheetController.value;
   void inSheet(PlaceFieldSheet sheet) => _sheetController.add(sheet);
 
   Stream<Data2<FieldError, PlaceFieldSheet>> _outErrorAndSheet;
   Stream<Data2<FieldError, PlaceFieldSheet>> get outErrorAndSheet {
-    if (_outErrorAndSheet == null)
-      _outErrorAndSheet = Data2.combineLatest(outError, outSheet);
+    if (_outErrorAndSheet == null) _outErrorAndSheet = Data2.combineLatest(outError, outSheet);
     return _outErrorAndSheet;
   }
-
-  @override
-  void inFieldState(FieldState state) => inSheet(sheet.copyWith(enable: state == FieldState.active));
 }
 
-
-class PlaceFieldShell extends StatefulWidget
-    implements FieldShell, FocusShell {
+class PlaceFieldShell extends StatefulWidget implements FieldShell, FocusShell {
   final PlaceFieldBone bone;
 
   @override
@@ -71,19 +64,22 @@ class PlaceFieldShell extends StatefulWidget
   final FieldErrorTranslator nosy;
   final InputDecoration decoration;
 
-  const PlaceFieldShell({Key key,
+  const PlaceFieldShell({
+    Key key,
     @required this.bone,
-    this.mapFocusBone, this.focusNode,
-    this.nosy: byPassNoisy, this.decoration: const TranslationsInputDecoration(
+    this.mapFocusBone,
+    this.focusNode,
+    this.nosy: basicNoisy,
+    this.decoration: const TranslationsInputDecoration(
       prefixIcon: Icon(Icons.home),
       translationsHintText: TranslationsConst(
         it: "Indirzzo",
         en: "Address",
       ),
     ),
-  }) :
-        assert(bone != null),
-        assert(nosy != null), super(key: key);
+  })  : assert(bone != null),
+        assert(nosy != null),
+        super(key: key);
 
   @override
   _PlaceFieldShellState createState() => _PlaceFieldShellState();
@@ -109,8 +105,12 @@ class _PlaceFieldShellState extends State<PlaceFieldShell>
   void didUpdateWidget(PlaceFieldShell oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.bone != oldWidget.bone) {
-      _valueSubscriber..unsubscribe()..subscribe(widget.bone.outValue);
-      _dataSubscriber..unsubscribe()..subscribe(widget.bone.outErrorAndSheet);
+      _valueSubscriber
+        ..unsubscribe()
+        ..subscribe(widget.bone.outValue);
+      _dataSubscriber
+        ..unsubscribe()
+        ..subscribe(widget.bone.outErrorAndSheet);
     }
   }
 
@@ -125,13 +125,13 @@ class _PlaceFieldShellState extends State<PlaceFieldShell>
   void _valueListener(ObservableState<String> update) {
     _controller.text = update.data;
   }
+
   void _dataListener(ObservableState<Data2<FieldError, PlaceFieldSheet>> update) {
     setState(() => _data = update.data);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return PlacesAutocompleteField(
       controller: _controller,
       apiKey: widget.bone.apiKey,
@@ -144,6 +144,3 @@ class _PlaceFieldShellState extends State<PlaceFieldShell>
     );
   }
 }
-
-
-
